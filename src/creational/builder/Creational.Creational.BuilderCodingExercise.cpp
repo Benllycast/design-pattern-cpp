@@ -3,58 +3,49 @@
 #include <ostream>
 using namespace std;
 
-struct Field
-{
+struct Field {
   string name, type;
 
   Field(const string& name, const string& type)
-    : name{name},
-      type{type}
-  {
-  }
+    : name{name}, type{type} { }
 
-
-  friend ostream& operator<<(ostream& os, const Field& obj)
-  {
+  friend ostream& operator<<(ostream& os, const Field& obj) {
     return os << obj.type << " " << obj.name << ";";
   }
+
 };
 
-struct Class
-{
+struct Class {
   string name;
   vector<Field> fields;
 
-  friend ostream& operator<<(ostream& os, const Class& obj)
-  {
+  friend ostream& operator<<(ostream& os, const Class& obj) {
     os << "class " << obj.name << "\n{\n";
-    for (auto&& field : obj.fields)
-    {
+    for (auto&& field : obj.fields) {
       os << "  " << field << "\n";
     }
     return os << "};\n";
   }
+
 };
 
-class CodeBuilder
-{
+class CodeBuilder {
   Class the_class;
+
 public:
-  CodeBuilder(const string& class_name)
-  {
+  CodeBuilder(const string& class_name) {
     the_class.name = class_name;
   }
 
-  CodeBuilder& add_field(const string& name, const string& type)
-  {
+  CodeBuilder& add_field(const string& name, const string& type) {
     the_class.fields.emplace_back(Field{ name, type });
     return *this;
   }
 
-  friend ostream& operator<<(ostream& os, const CodeBuilder& obj)
-  {
+  friend ostream& operator<<(ostream& os, const CodeBuilder& obj) {
     return os << obj.the_class;
   }
+
 };
 
 #include "gtest/gtest.h"
@@ -102,12 +93,9 @@ static inline std::string rtrim_copy(std::string s) {
 
 namespace
 {
-  class Evaluate : public testing::Test
-  {
-  };
+  class Evaluate : public testing::Test { };
 
-  TEST_F(Evaluate, EmptyTest)
-  {
+  TEST_F(Evaluate, EmptyTest) {
     CodeBuilder cb{ "Foo" };
     ostringstream oss;
     oss << cb;
@@ -116,8 +104,7 @@ namespace
     ASSERT_EQ("class Foo\n{\n};", printed);
   }
 
-  TEST_F(Evaluate, PersonTest)
-  {
+  TEST_F(Evaluate, PersonTest) {
     auto cb = CodeBuilder{ "Person" }
       .add_field("name", "string")
       .add_field("age", "int");
@@ -127,4 +114,5 @@ namespace
     trim(printed);
     ASSERT_EQ("class Person\n{\n  string name;\n  int age;\n};", printed);
   }
+
 } // namespace

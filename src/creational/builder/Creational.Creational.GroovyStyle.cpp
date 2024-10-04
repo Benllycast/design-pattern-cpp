@@ -3,26 +3,24 @@
 #include <iostream>
 
 namespace html {
+
   struct Tag
   {
     std::string name;
     std::string text;
     std::vector<Tag> children;
-    std::vector<std::pair<std::string, std::string>> attributes;
+    std::vector< std::pair< std::string, std::string > > attributes;
 
-    friend std::ostream& operator<<(std::ostream& os, const Tag& tag)
-    {
+    friend std::ostream& operator<<(std::ostream& os, const Tag& tag) {
       os << "<" << tag.name;
 
       for (const auto& att : tag.attributes)
         os << " " << att.first << "=\"" << att.second << "\"";
 
-      if (tag.children.size() == 0 && tag.text.length() == 0)
-      {
+      if (tag.children.size() == 0 && tag.text.length() == 0) {
         os << "/>" << std::endl;
       } 
-      else
-      {
+      else {
         os << ">" << std::endl;
 
         if (tag.text.length())
@@ -36,57 +34,42 @@ namespace html {
 
       return os;
     }
+
   protected:
 
     Tag(const std::string& name, const std::string& text)
-      : name{name},
-        text{text}
-    {
-    }
+      : name{name}, text{text} { }
 
 
     Tag(const std::string& name, const std::vector<Tag>& children)
-      : name{name},
-        children{children}
-    {
-    }
+      : name{name}, children{children} { }
   };
 
-  struct P : Tag
-  {
+  struct P : Tag {
+
     explicit P(const std::string& text)
-      : Tag{"p", text}
-    {
-    }
+      : Tag{"p", text} { }
 
     P(std::initializer_list<Tag> children)
-      : Tag("p", children)
-    {
-    }
+      : Tag("p", children) { }
     
   };
 
-  struct IMG : Tag
-  {
-    explicit IMG(const std::string& url)
-      : Tag{"img", ""}
-    {
+  struct IMG : Tag {
+
+    explicit IMG(const std::string& url) : Tag{"img", ""} {
       attributes.emplace_back(make_pair("src", url));
     }
+
   };
 }
 
-int main1()
+int main()
 {
   using namespace html;
 
-  std::cout <<
-
-    P {
-      IMG {"http://pokemon.com/pikachu.png"}
-    }
-
-    << std::endl;
+  std::cout << P { IMG {"http://pokemon.com/pikachu.png"} }
+            << std::endl;
 
   getchar();
   return 0;

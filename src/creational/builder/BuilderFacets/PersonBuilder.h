@@ -4,17 +4,15 @@
 class PersonAddressBuilder;
 class PersonJobBuilder;
 
-class PersonBuilderBase
-{
+class PersonBuilderBase {
+
 protected:
   Person& person;
   explicit PersonBuilderBase(Person& person)
-    : person{ person }
-  {
-  }
+    : person{ person } { }
+
 public:
-  operator Person() const
-  {
+  operator Person() const {
     return std::move(person);
   }
 
@@ -24,12 +22,10 @@ public:
   PersonJobBuilder works() const;
 };
 
-class PersonBuilder : public PersonBuilderBase
-{
+class PersonBuilder : public PersonBuilderBase {
   Person p;
+
 public:
-  PersonBuilder(): PersonBuilderBase{p}
-  {
-  }
+  PersonBuilder(): PersonBuilderBase{p} { }
 
 };

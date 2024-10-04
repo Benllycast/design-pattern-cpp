@@ -1,3 +1,5 @@
+// BUILDER PATTERN
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -5,8 +7,11 @@
 #include <memory>
 using namespace std;
 
+// Root builder declaration
 struct HtmlBuilder;
 
+// Child builder
+B
 struct HtmlElement
 {
   string name;
@@ -15,21 +20,21 @@ struct HtmlElement
   const size_t indent_size = 2;
 
   HtmlElement() {}
-  HtmlElement(const string& name, const string& text)
-    : name(name),
-    text(text)
-  {
-  }
 
-  string str(int indent = 0) const
-  {
+  HtmlElement(const string& name, const string& text)
+    : name(name), text(text) { }
+
+  // this print the html element
+  string str(int indent = 0) const {
     ostringstream oss;
     string i(indent_size*indent, ' ');
-    oss << i << "<" << name << ">" << endl;
-    if (text.size() > 0)
-      oss << string(indent_size*(indent + 1), ' ') << text << endl;
 
-    for (const auto& e : elements)
+    oss << i << "<" << name << ">" << endl;
+
+    if ( text.size() > 0 )
+      oss << string( indent_size*(indent + 1), ' ' ) << text << endl;
+
+    for ( const auto& e : elements )
       oss << e.str(indent + 1);
 
     oss << i << "</" << name << ">" << endl;
@@ -40,18 +45,18 @@ struct HtmlElement
   {
     return make_unique<HtmlBuilder>(root_name);
   }
+
 };
 
+// ROOT BUILDER
 struct HtmlBuilder
 {
-  HtmlBuilder(string root_name)
-  {
+  HtmlBuilder(string root_name) {
     root.name = root_name;
   }
 
   // void to start with
-  HtmlBuilder& add_child(string child_name, string child_text)
-  {
+  HtmlBuilder& add_child(string child_name, string child_text) {
     HtmlElement e{ child_name, child_text };
     root.elements.emplace_back(e);
     return *this;
@@ -73,6 +78,8 @@ struct HtmlBuilder
 
 int demo()
 {
+
+  // without builder pattern
   // <p>hello</p>
   auto text = "hello";
   string output;
@@ -90,14 +97,16 @@ int demo()
   oss << "</ul>";
   printf(oss.str().c_str());
 
-  // easier
+  //With builder pattern. easier way
   HtmlBuilder builder{ "ul" };
   builder.add_child("li", "hello").add_child("li", "world");
   cout << builder.str() << endl;
 
 
   auto builder2 = HtmlElement::build("ul")
-    ->add_child_2("li", "hello")->add_child_2("li", "world");
+    ->add_child_2("li", "hello")
+    ->add_child_2("li", "world");
+
   cout << builder2 << endl;
 
   getchar();
